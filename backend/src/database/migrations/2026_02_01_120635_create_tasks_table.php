@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('tasks', function (Blueprint $table) {
@@ -29,15 +26,11 @@ return new class extends Migration
             $table->enum('created_by', ['student', 'teacher']);
             $table->foreignId('assigned_to')->nullable()->constrained('users')->cascadeOnDelete();
 
-                $table->json('dependencies')->nullable();
+            $table->json('dependencies')->nullable();
 
             $table->timestamps();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('tasks');

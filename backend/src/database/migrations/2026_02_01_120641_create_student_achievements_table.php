@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('student_achievements', function (Blueprint $table) {
@@ -16,7 +13,7 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained('users')->cascadeOnDelete();
             $table->enum('achievement_type',
             [
-               'first_task',
+                'first_task',
                 'sprint_completed',
                 'helper',
                 'consistent'
@@ -25,10 +22,6 @@ return new class extends Migration
             $table->timestamp('earned_at')->useCurrent();
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('student_achievements');
