@@ -1,226 +1,66 @@
 classDiagram
+  class User {
+    +id: int
+    +full_name: string
+    +email: string
+    +password_hash: string
+    +role: enum(teacher, student)
+    +managedProjects()
+    +projects()
+    +tasks()
+  }
 
-%% =====================
-%% Core User Structure
-%% =====================
+  class Project {
+    +id: int
+    +title: string
+    +status: enum
+    +sprints()
+    +tasks()
+    +students()
+  }
 
-class User {
-  -int id
-  -string email
-  -string password_hash
-  -string full_name
-  -enum role
-  -datetime created_at
+  class Sprint {
+    +id: int
+    +sprint_number: int
+    +status: enum
+    +tasks()
+    +standups()
+  }
 
-  +register(email, password) bool
-  +login(email, password) bool
-  +updateProfile(name, email) void
-}
+  class Task {
+    +id: int
+    +dependencies: json
+    +status: enum
+    +issues()
+    +solution()
+  }
 
-class Student {
-  -int user_id
+  class ProjectStudent {
+    +role: string
+    +points_earned: int
+  }
 
-  +submitStandup() void
-  +updateTaskStatus() void
-  +submitSolution() void
-  +reportIssue(issue) void
-}
+  class TaskIssue {
+    +id: int
+    +task_id: int
+    +status: enum
+    +replies()
+  }
 
-class Teacher {
-  -int user_id
+  class TaskSolution {
+    +id: int
+    +content: text
+    +feedback()
+  }
 
-  +createProject() int
-  +createSprint() int
-  +reviewSubmission() void
-  +provideFeedback() void
-}
-
-User "1" <|-- "1" Student
-User "1" <|-- "1" Teacher
-
-%% =====================
-%% Project & Sprint
-%% =====================
-
-class Project {
-  -int id
-  -string title
-  -text description
-  -text learning_goals
-  -int teacher_id
-  -enum status
-  -datetime created_at
-
-  +createProject(title, description) int
-  +updateProject(id, title, description) void
-}
-
-class Sprint {
-  -int id
-  -int project_id
-  -int sprint_number
-  -date start_date
-  -date end_date
-  -enum status
-  -datetime created_at
-
-  +startSprint() void
-  +endSprint() void
-}
-
-Project "1" o-- "*" Sprint
-Teacher "1" -- "1" Project
-
-%% =====================
-%% Project Students
-%% =====================
-
-class ProjectStudent {
-  -int id
-  -int project_id
-  -int student_id
-  -int points_earned
-  -int tasks_completed
-  -datetime joined_at
-
-  +enrollStudent(projectId, studentId) void
-  +updateProgress(points, tasks) void
-}
-
-Project "1" o-- "*" ProjectStudent
-Student "1" -- "*" ProjectStudent
-
-%% =====================
-%% Tasks
-%% =====================
-
-class Task {
-  -int id
-  -int project_id
-  -int sprint_id
-  -string title
-  -text description
-  -enum status
-  -enum priority
-  -int story_points
-  -int assigned_to
-  -int created_by
-  -datetime created_at
-
-  +assignTask(studentId) void
-  +updateStatus(status) void
-}
-
-Sprint "1" o-- "*" Task
-
-%% =====================
-%% Daily Standup
-%% =====================
-
-class DailyStandup {
-  -int id
-  -int project_id
-  -int sprint_id
-  -int student_id
-  -date date
-  -text what_i_did_yesterday
-  -text what_i_will_do_today
-  -text blockers
-  -datetime created_at
-
-  +submitStandupReport() void
-}
-
-Student "1" -- "*" DailyStandup
-Task "1" -- "*" DailyStandup
-
-%% =====================
-%% Task Issues & Replies
-%% =====================
-
-class TaskIssue {
-  -int id
-  -int task_id
-  -int student_id
-  -text message
-  -enum status
-  -datetime created_at
-
-  +reportIssue(message) void
-}
-
-class TaskIssueReply {
-  -int id
-  -int issue_id
-  -int teacher_id
-  -text reply
-  -datetime created_at
-
-  +replyToIssue(reply) void
-}
-
-Task "1" o-- "*" TaskIssue
-TaskIssue "1" o-- "*" TaskIssueReply
-Teacher "1" -- "*" TaskIssueReply
-
-%% =====================
-%% Task Solution & Feedback
-%% =====================
-
-class TaskSolution {
-  +int id
-  +int task_id
-  +int student_id
-  +text content
-
-  +submitSolution()
-}
-
-class TaskFeedback {
-  +int id
-  +int solution_id
-  +int teacher_id
-  +text feedback
-  +datetime created_at
-
-  +provideFeedback()
-}
-
-Task "1" --> "*" TaskSolution
-TaskSolution "1" --> "1" TaskFeedback
-Teacher "1" --> "*" TaskFeedback
-
-%% =====================
-%% Sprint Retrospective
-%% =====================
-
-class SprintRetrospective {
-  +int id
-  +int sprint_id
-  +int student_id
-  +text what_went_well
-  +text what_went_wrong
-  +text action_items
-  +datetime created_at
-
-  +submitRetrospectiveReport()
-}
-
-Sprint "1" --> "*" SprintRetrospective
-Student "1" --> "*" SprintRetrospective
-
-%% =====================
-%% Achievements
-%% =====================
-
-class Achievement {
-  +int id
-  +enum achievement_type
-  +int project_id
-  +datetime awarded_at
-
-  +earnAchievement()
-}
-
-Project "1" --> "*" Achievement
-Student "1" --> "*" Achievement
+  User "1" -- "0..*" Project : creates (Teacher)
+  User "1" -- "0..*" ProjectStudent : participates (Student)
+  Project "1" -- "0..*" ProjectStudent : has
+  Project "1" -- "0..*" Sprint : contains
+  Project "1" -- "0..*" Task : owns
+  Sprint "1" -- "0..*" Task : includes
+  User "1" -- "0..*" Task : assigned_to
+  Task "1" -- "0..*" TaskIssue : has_blockers
+  Task "1" -- "0..1" TaskSolution : submitted_by
+  TaskIssue "1" -- "0..*" TaskIssueReply : has_replies
+  TaskSolution "1" -- "0..1" TaskFeedback : receives

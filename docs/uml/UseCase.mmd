@@ -1,62 +1,63 @@
-usecaseDiagram
-    actor "Teacher" as T
-    actor "Student" as S
+flowchart LR
+%% Actors (using circles)
+    T((Teacher))
+    S((Student))
+    G((guest))
 
-    package "Scrum School Platform" {
-        %% Authentication
-        usecase "Login" as UC_Login
-        usecase "Register" as UC_Register
+    subgraph "Scrum School Platform"
+        direction TB
+    %% Use stadium shapes [()] for Use Cases
+        UC_Login([Login])
+        UC_Register([Register])
 
-        %% Project Management
-        usecase "Create Project" as UC_CreateProject
-        usecase "Manage Project Status" as UC_ManageProject
-        usecase "Assign Students" as UC_AssignStudent
+        UC_CreateProject([Create Project])
+        UC_ManageProject([Manage Project Status])
+        UC_AssignStudent([Assign Students])
 
-        %% Sprint & Agile Management
-        usecase "Create Sprint" as UC_CreateSprint
-        usecase "View Sprints" as UC_ViewSprints
-        usecase "Submit Daily Standup" as UC_SubmitStandup
-        usecase "View Standups" as UC_ViewStandups
-        usecase "Submit Retrospective" as UC_SubmitRetro
-        usecase "View Retrospectives" as UC_ViewRetros
+        UC_CreateSprint([Create Sprint])
+        UC_ViewSprints([View Sprints])
+        UC_SubmitStandup([Submit Daily Standup])
+        UC_ViewStandups([View Standups])
+        UC_SubmitRetro([Submit Retrospective])
+        UC_ViewRetros([View Retrospectives])
 
-        %% Task Management
-        usecase "Create Task" as UC_CreateTask
-        usecase "View Tasks" as UC_ViewTasks
-        usecase "Update Task Status" as UC_UpdateTaskStatus
-        usecase "Submit Task Solution" as UC_SubmitSolution
-        usecase "Review Solution & Give Feedback" as UC_ReviewSolution
+        UC_CreateTask([Create Task])
+        UC_ViewTasks([View Tasks])
+        UC_UpdateTaskStatus([Update Task Status])
+        UC_SubmitSolution([Submit Task Solution])
+        UC_ReviewSolution([Review Solution & Feedback])
 
-        %% Issues & Support
-        usecase "Report Task Issue" as UC_ReportIssue
-        usecase "Reply to Issue" as UC_ReplyIssue
+        UC_ReportIssue([Report Task Issue])
+        UC_ReplyIssue([Reply to Issue])
 
-        %% Achievements
-        usecase "Award Achievement" as UC_AwardAchievement
-        usecase "View Achievements" as UC_ViewAchievements
-    }
+        UC_AwardAchievement([Award Achievement])
+        UC_ViewAchievements([View Achievements])
+    end
 
-    %% Relationships - Teacher
-    T --> UC_Login
-    T --> UC_CreateProject
-    T --> UC_ManageProject
-    T --> UC_AssignStudent
-    T --> UC_CreateSprint
-    T --> UC_CreateTask
-    T --> UC_ViewStandups
-    T --> UC_ViewRetros
-    T --> UC_ReviewSolution
-    T --> UC_ReplyIssue
-    T --> UC_AwardAchievement
+%% Relationships - Teacher
+    T --- UC_CreateProject
+    T --- UC_ManageProject
+    T --- UC_AssignStudent
+    T --- UC_CreateSprint
+    T --- UC_CreateTask
+    T --- UC_ViewStandups
+    T --- UC_ViewRetros
+    T --- UC_ReviewSolution
+    T --- UC_ReplyIssue
+    T --- UC_AwardAchievement
 
-    %% Relationships - Student
-    S --> UC_Login
-    S --> UC_ViewSprints
-    S --> UC_ViewTasks
-    S --> UC_UpdateTaskStatus
-    S --> UC_SubmitSolution
-    S --> UC_SubmitStandup
-    S --> UC_SubmitRetro
-    S --> UC_ReportIssue
-    S --> UC_ReplyIssue
-    S --> UC_ViewAchievements
+%% Relationships - Student
+    S --- UC_ViewSprints
+    S --- UC_ViewTasks
+    S --- UC_UpdateTaskStatus
+    S --- UC_SubmitSolution
+    S --- UC_SubmitStandup
+    S --- UC_SubmitRetro
+    S --- UC_ReportIssue
+    S --- UC_ReplyIssue
+    S --- UC_ViewAchievements
+
+%% Relationships - Guest
+
+    G --- UC_Register
+    G --- UC_Login
