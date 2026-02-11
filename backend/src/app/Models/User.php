@@ -26,9 +26,15 @@ class User extends Authenticatable
         return $this->hasMany(Project::class, 'teacher_id');
     }
 
-    public function project()
+    public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_students', 'student_id', 'project_id');
+        return $this->belongsToMany(Project::class, 'project_students', 'student_id', 'project_id')
+            ->withPivot('role','points_earned','tasks_completed')
+            ->withTimestamps();
+    }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, 'assigned_to');
     }
     function isTeacher() : bool
     {
